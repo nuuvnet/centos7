@@ -1,12 +1,13 @@
 name: Docker Build CentOS 7 Updated
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  #push:
+  #  branches:
+  #    - main
+  #pull_request:
+  #  branches:
+  #    - main
+  workflow_dispatch:
 
 jobs:
   build:
