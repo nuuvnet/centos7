@@ -1,10 +1,10 @@
 # 1. load original centos7 image
 # gunzip -c ./centos7-original.tar.gz | docker load
 # 2. Build updated centos7 image:
-# docker build -f Dockerfile.centos7 -t centos7-$(date +%Y%m%d) --no-cache .
+# docker build -f Dockerfile.centos7 -t centos7-updated --no-cache .
 
 # Use an official / original CentOS base image
-FROM centos:7
+FROM nuuvnet/centos7:original
 
 # Install required packages including EPEL (Extra Packages for Enterprise Linux)
 RUN yum -y update && \
@@ -55,6 +55,4 @@ COPY httpd-2.2.15.tar.gz \
      .
 
 COPY supervisord.conf.centos7 /etc/supervisord.conf
-RUN systemctl enable supervisord \
-    && systemctl start supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

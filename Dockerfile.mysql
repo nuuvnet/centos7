@@ -36,6 +36,6 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
 
 EXPOSE 3306
 
-#CMD ["/http/server/apache2/bin/apachectl", "-D", "FOREGROUND"]
-COPY supervisord.conf.http /etc/supervisord.conf
+#CMD ["mysqld_safe"]
+COPY supervisord.conf.mysql /etc/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
