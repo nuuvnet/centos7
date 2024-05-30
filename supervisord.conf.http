@@ -1,0 +1,9 @@
+[supervisord]
+nodaemon=true
+
+[program:apache2]
+command=/usr/sbin/httpd -DFOREGROUND
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/httpd/access.log
+stderr_logfile=/var/log/httpd/error.log

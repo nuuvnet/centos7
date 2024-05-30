@@ -1,0 +1,41 @@
+# Build with:
+# docker build -f Dockerfile.http -t centos7-http --no-cache .
+
+# Use an official / original CentOS base image
+FROM centos7-20240530:latest
+
+# HTTP
+WORKDIR /http/build
+RUN mv /build/httpd-2.2.15.tar.gz . \
+    && tar -xzf httpd-2.2.15.tar.gz
+WORKDIR /http/build/httpd-2.2.15
+RUN cp /build/config.guess ./build \
+    && cp /build/config.sub ./build
+RUN ./configure --prefix=/http/server/apache2 && \
+    make && \
+    make install
+RUN /http/server/apache2/bin/apachectl start && \
+    /http/server/apache2/bin/httpd -v
+
+# PHP
+WORKDIR /php/build
+RUN mv /build/php-5.4.16.tar.gz . \
+    && tar -xzf php-5.4.16.tar.gz
+WORKDIR /php/build/php-5.4.16
+RUN cp /build/config.guess . \
+    && cp /build/config.sub .
+RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
+    --with-zlib --enable-mbstring --with-curl --with-gd --enable-gd-native-ttf \
+    --with-freetype-dir=/usr/include/freetype2 --with-jpeg-dir=/usr \
+    --with-png-dir=/usr --enable-sockets --with-xsl --with-ldap \
+    --with-xmlrpc --enable-soap --enable-zip --with-bz2 --enable-intl --with-mcrypt \
+    --with-redis --with-memcache --enable-openssl --with-mhash --enable-pcntl \
+    --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm LIBS="-llber" \
+    && make \
+    && make install
+
+EXPOSE 80 443
+
+#CMD ["/http/server/apache2/bin/apachectl", "-D", "FOREGROUND"]
+COPY supervisord.conf.http /etc/supervisord.conf
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

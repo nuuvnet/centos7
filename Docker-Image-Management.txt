@@ -1,0 +1,41 @@
+1. Save the centos:7 Docker Image:
+
+docker pull centos:7
+docker save -o ./centos7-original.tar centos:7
+
+2. Load the Docker Image:
+
+docker load -i ./centos7-original.tar
+
+---
+
+1. Save the centos:7 Docker Image as a .tar.gz file (~ 30% smaller):
+
+docker pull centos:7
+docker save centos:7 | gzip > ./centos7-original.tar.gz
+
+2. Load the Docker Image from a .tar.gz file:
+
+gunzip -c ./centos7-original.tar.gz | docker load
+
+---
+
+Created an updated version of the centos:7 Docker Image to be used as base image:
+
+docker build -f Dockerfile.centos7 -t centos7-$(date +%Y%m%d) --no-cache .
+docker save centos7-20240530:latest | gzip > ./centos7-20240530.tgz
+gunzip -c ./centos7-20240530.tgz | docker load
+
+---
+
+Docker image with http and php installed
+
+docker build -f Dockerfile.http -t centos7-http --no-cache .
+docker save centos7-http:latest | gzip > ./centos7-http.tgz
+gunzip -c ./centos7-http.tgz | docker load
+
+---
+
+Docker image with mysql and phpmyadmin installed
+
+docker build -f Dockerfile.lamp -t centos7-lamp --no-cache .
