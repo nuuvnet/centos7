@@ -9,7 +9,7 @@ FROM centos:7
 # Install required packages including EPEL (Extra Packages for Enterprise Linux)
 RUN yum -y update && \
     yum -y install epel-release && \
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-aarch64
+    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 RUN yum -y update && \
     yum install -y glibc-common && \
