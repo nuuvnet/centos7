@@ -9,15 +9,12 @@ FROM nuuvnet/centos7:original
 # Install required packages including EPEL (Extra Packages for Enterprise Linux)
 RUN yum -y update && \
     yum -y install epel-release && \
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-
-RUN yum -y update && \
-    yum install -y glibc-common && \
-    localedef -i en_US -f UTF-8 en_US.UTF-8
+    yum -y install glibc-common
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
 RUN yum groupinstall -y "Development Tools"
 
