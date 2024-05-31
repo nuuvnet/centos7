@@ -1,5 +1,5 @@
 # Build with:
-# docker build -f Dockerfile.http -t centos7-http --no-cache .
+# docker build -f Dockerfile.mysql -t centos7-mysql --no-cache .
 
 # Use an official / original CentOS base image
 FROM nuuvnet/centos7:http
@@ -17,7 +17,8 @@ RUN mkdir -p /mysql/server && \
 WORKDIR /mysql/build/mysql-5.1.66
 RUN cp /build/config.guess . \
     && cp /build/config.sub .
-RUN ./configure --prefix=/mysql/server --enable-local-infile --with-charset=utf8 --with-collation=utf8_general_ci && \
+RUN ./configure --prefix=/mysql/server --enable-local-infile \
+    --with-charset=utf8 --with-collation=utf8_general_ci && \
     make && \
     make install
 WORKDIR /mysql/server
