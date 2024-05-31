@@ -2,39 +2,51 @@
 # docker build -f Dockerfile.http -t centos7-http --no-cache .
 
 # Use an official / original CentOS base image
-FROM centos7-20240530:latest
+FROM nuuvnet/centos7:http
 
-# HTTP
-WORKDIR /http/build
-RUN mv /build/httpd-2.2.15.tar.gz . \
-    && tar -xzf httpd-2.2.15.tar.gz
-WORKDIR /http/build/httpd-2.2.15
-RUN cp /build/config.guess ./build \
-    && cp /build/config.sub ./build
-RUN ./configure --prefix=/http/server/apache2 && \
+#MYSQL
+WORKDIR /mysql/build
+#RUN wget -O mysql.tar.gz 'https://downloads.mysql.com/archives/get/p/23/file/mysql-5.1.66.tar.gz' && \
+#    tar -xzf mysql.tar.gz && \
+#    mv mysql-* /mysql && \
+#    rm mysql.tar.gz
+RUN mv /build/mysql-5.1.66.tar.gz . \
+    && tar -xzf mysql-5.1.66.tar.gz
+RUN mkdir -p /mysql/server && \
+    mkdir -p /etc/mysql
+WORKDIR /mysql/build/mysql-5.1.66
+RUN ./configure --prefix=/mysql/server --enable-local-infile --with-charset=utf8 --with-collation=utf8_general_ci && \
     make && \
     make install
-RUN /http/server/apache2/bin/apachectl start && \
-    /http/server/apache2/bin/httpd -v
+WORKDIR /mysql/server
+RUN groupadd -g 1000 mysql && \
+    useradd -r -u 1000 -g mysql -s /bin/false mysql && \
+    chown -R mysql:mysql .
+RUN cp ./share/mysql/mysql.server /etc/init.d/mysql && \
+    cp ./share/mysql/my-medium.cnf /etc/mysql/my.cnf && \
+    chkconfig --add mysql
+# Set environment paths
+ENV PATH $PATH:/mysql/server/bin
 
-# PHP
-WORKDIR /php/build
-RUN mv /build/php-5.4.16.tar.gz . \
-    && tar -xzf php-5.4.16.tar.gz
-WORKDIR /php/build/php-5.4.16
-RUN cp /build/config.guess . \
-    && cp /build/config.sub .
-RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
-    --with-zlib --enable-mbstring --with-curl --with-gd --enable-gd-native-ttf \
-    --with-freetype-dir=/usr/include/freetype2 --with-jpeg-dir=/usr \
-    --with-png-dir=/usr --enable-sockets --with-xsl --with-ldap \
-    --with-xmlrpc --enable-soap --enable-zip --with-bz2 --enable-intl --with-mcrypt \
-    --with-redis --with-memcache --enable-openssl --with-mhash --enable-pcntl \
-    --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm LIBS="-llber" \
-    && make \
-    && make install
+#PHPMYADMIN
+WORKDIR /http/server/apache2/htdocs
+RUN mv /build/phpMyAdmin-2.11.11.3-all-languages.tar.gz . \
+    && tar -xzf phpMyAdmin-2.11.11.3-all-languages.tar.gz \
+    && mv phpMyAdmin-2.11.11.3-all-languages phpmyadmin
+COPY config.phpmyadmin.inc.php /http/server/apache2/htdocs/phpmyadmin/config.inc.php
+# Create PHPMyAdmin configuration file for Apache
+RUN echo "Listen 8080" > /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "<VirtualHost *:8080>" >> /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "    DocumentRoot /http/server/apache2/htdocs/phpmyadmin" >> /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "    <Directory /http/server/apache2/htdocs/phpmyadmin>" >> /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "        AllowOverride All" >> /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "        Require all granted" >> /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "    </Directory>" >> /http/server/apache2/conf/extra/phpmyadmin.conf \
+    && echo "</VirtualHost>" >> /http/server/apache2/conf/extra/phpmyadmin.conf
+# Ensure Apache includes the phpmyadmin configuration
+RUN echo "Include conf/extra/phpmyadmin.conf" >> /http/server/apache2/conf/httpd.conf
 
-EXPOSE 80 443 3306
+EXPOSE 80 443 3306 8080
 
 #CMD ["mysqld_safe"]
 COPY supervisord.conf.mysql /etc/supervisord.conf
