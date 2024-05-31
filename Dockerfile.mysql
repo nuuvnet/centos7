@@ -34,7 +34,7 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
     && make \
     && make install
 
-EXPOSE 3306
+EXPOSE 80 443 3306
 
 #CMD ["mysqld_safe"]
 COPY supervisord.conf.mysql /etc/supervisord.conf

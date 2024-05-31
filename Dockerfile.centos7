@@ -42,8 +42,9 @@ WORKDIR /build
 
 #RUN wget -O ./build/config.guess 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD' && \
 #    wget -O ./build/config.sub 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
-COPY config.guess . \
-    config.sub .
+COPY config.guess \
+     config.sub \
+     .
 
 COPY httpd-2.2.15.tar.gz \
      php-5.4.16.tar.gz \
