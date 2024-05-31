@@ -4,7 +4,7 @@
 # docker build -f Dockerfile.centos7 -t centos7-updated --no-cache .
 
 # Use an official / original CentOS base image
-FROM nuuvnet/centos7:original
+FROM centos:7
 
 # Install required packages including EPEL (Extra Packages for Enterprise Linux)
 RUN yum -y update && \
