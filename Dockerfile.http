@@ -2,7 +2,7 @@
 # docker build -f Dockerfile.http -t centos7-http --no-cache .
 
 # Use an official / original CentOS base image
-FROM centos7-20240530:latest
+FROM nuuvnet/centos7:updated
 
 # HTTP
 WORKDIR /http/build
