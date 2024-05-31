@@ -1,4 +1,4 @@
-name: Docker Build CentOS 7 Updated
+name: Docker Build CentOS 7 HTTP
 
 on:
   #push:
