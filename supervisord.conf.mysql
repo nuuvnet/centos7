@@ -9,7 +9,7 @@ stdout_logfile=/var/log/httpd/access.log
 stderr_logfile=/var/log/httpd/error.log
 
 [program:mysql]
-command=/usr/bin/mysqld_safe
+command=/mysql/server/bin/mysqld_safe
 autostart=true
 autorestart=true
 stdout_logfile=/var/log/mysql/mysql.log

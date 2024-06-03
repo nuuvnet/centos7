@@ -2,9 +2,13 @@
 # docker build -f Dockerfile.mysql -t centos7-mysql --no-cache .
 
 # Use an official / original CentOS base image
+#FROM nuuvnet/centos7:updated
 FROM nuuvnet/centos7:http
 
 #MYSQL
+RUN mkdir -p /mysql/build && \
+    mkdir -p /mysql/server/var && \
+    mkdir -p /etc/mysql
 WORKDIR /mysql/build
 #RUN wget -O mysql.tar.gz 'https://downloads.mysql.com/archives/get/p/23/file/mysql-5.1.66.tar.gz' && \
 #    tar -xzf mysql.tar.gz && \
@@ -12,7 +16,8 @@ WORKDIR /mysql/build
 #    rm mysql.tar.gz
 RUN mv /build/mysql-5.1.66.tar.gz . \
     && tar -xzf mysql-5.1.66.tar.gz
-RUN mkdir -p /mysql/server && \
+RUN mkdir -p /mysql/build && \
+    mkdir -p /mysql/server/var && \
     mkdir -p /etc/mysql
 WORKDIR /mysql/build/mysql-5.1.66
 RUN cp /build/config.guess . \
@@ -21,13 +26,14 @@ RUN ./configure --prefix=/mysql/server --enable-local-infile \
     --with-charset=utf8 --with-collation=utf8_general_ci && \
     make && \
     make install
+RUN cp ./support-files/my-medium.cnf /etc/my.cnf && \
+    cp ./support-files/mysql.server /etc/init.d/mysql && \
+    chmod 755 /etc/init.d/mysql && \
+    chkconfig --add mysql
 WORKDIR /mysql/server
 RUN groupadd -g 1000 mysql && \
     useradd -r -u 1000 -g mysql -s /bin/false mysql && \
     chown -R mysql:mysql .
-RUN cp ./share/mysql/mysql.server /etc/init.d/mysql && \
-    cp ./share/mysql/my-medium.cnf /etc/mysql/my.cnf && \
-    chkconfig --add mysql
 # Set environment paths
 ENV PATH $PATH:/mysql/server/bin
 
