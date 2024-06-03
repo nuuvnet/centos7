@@ -34,8 +34,7 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
     && make \
     && make install
 
-# AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using x.x.x.x. Set the 'ServerName' directive globally to suppress this message
-RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
+COPY httpd.conf /etc/httpd/conf/httpd.conf
 
 EXPOSE 80 443
 
