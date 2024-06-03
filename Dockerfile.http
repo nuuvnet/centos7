@@ -14,8 +14,9 @@ RUN cp /build/config.guess ./build \
 RUN ./configure --prefix=/http/server/apache2 && \
     make && \
     make install
-RUN /http/server/apache2/bin/apachectl start && \
-    /http/server/apache2/bin/httpd -v
+COPY httpd.conf /etc/httpd/conf/httpd.conf
+#RUN /http/server/apache2/bin/apachectl start && \
+#    /http/server/apache2/bin/httpd -v
 
 # PHP
 WORKDIR /php/build
@@ -33,8 +34,7 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
     --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm LIBS="-llber" \
     && make \
     && make install
-
-COPY httpd.conf /etc/httpd/conf/httpd.conf
+COPY php.conf /etc/httpd/conf.d/php.conf
 
 EXPOSE 80 443
 
