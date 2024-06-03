@@ -17,14 +17,14 @@ ENV LC_ALL en_US.UTF-8
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
 RUN yum groupinstall -y "Development Tools"
-
-RUN yum -y install mlocate wget make gcc gcc-c++ libaio-devel libffi-devel \
-    openssl-devel ncurses-devel zlib-devel apr-devel apr-util-devel pcre-devel \
-    policycoreutils-python net-tools libxml2-devel httpd-devel bzip2-devel \
-    curl-devel db4-devel libjpeg-devel libpng-devel libXpm-devel gmp-devel \
-    libc-client-devel openldap-devel unixODBC-devel net-snmp-devel freetype-devel \
-    libxslt-devel libmcrypt-devel libicu-devel aspell-devel recode-devel \
-    libtidy-devel libtool-ltdl-devel supervisor && \
+RUN yum -y update && \
+    yum -y install mlocate wget make gcc gcc-c++ libaio-devel libffi-devel \
+        openssl-devel ncurses-devel zlib-devel apr-devel apr-util-devel pcre-devel \
+        policycoreutils-python net-tools libxml2-devel httpd-devel bzip2-devel \
+        curl-devel db4-devel libjpeg-devel libpng-devel libXpm-devel gmp-devel \
+        libc-client-devel openldap-devel unixODBC-devel net-snmp-devel freetype-devel \
+        libxslt-devel libmcrypt-devel libicu-devel aspell-devel recode-devel \
+        libtidy-devel libtool-ltdl-devel supervisor && \
     yum clean all
 
 RUN echo "SELINUX=disabled" > /etc/selinux/config
