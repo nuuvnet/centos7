@@ -14,7 +14,7 @@ RUN cp /build/config.guess ./build \
 RUN ./configure --prefix=/http/server/apache2 && \
     make && \
     make install
-COPY httpd.conf /etc/httpd/conf/httpd.conf
+COPY ./httpd.conf /etc/httpd/conf/httpd.conf
 #RUN /http/server/apache2/bin/apachectl start && \
 #    /http/server/apache2/bin/httpd -v
 
@@ -34,10 +34,10 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
     --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm LIBS="-llber" \
     && make \
     && make install
-COPY php.conf /etc/httpd/conf.d/php.conf
+COPY ./php.conf /etc/httpd/conf.d/php.conf
 
 EXPOSE 80 443
 
 #CMD ["/http/server/apache2/bin/apachectl", "-D", "FOREGROUND"]
-COPY supervisord.conf.http /etc/supervisord.conf
+COPY ./supervisord.conf.http /etc/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

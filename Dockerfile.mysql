@@ -43,7 +43,7 @@ RUN cp /build/phpMyAdmin-2.11.11.3-all-languages.tar.gz . \
     && tar -xzf phpMyAdmin-2.11.11.3-all-languages.tar.gz \
     && rm -f phpMyAdmin-2.11.11.3-all-languages.tar.gz \
     && mv phpMyAdmin-2.11.11.3-all-languages phpmyadmin
-COPY config.phpmyadmin.inc.php /http/server/apache2/htdocs/phpmyadmin/config.inc.php
+COPY ./config.phpmyadmin.inc.php /http/server/apache2/htdocs/phpmyadmin/config.inc.php
 # Create PHPMyAdmin configuration file for Apache, should be loaded by "IncludeOptional conf.d/*.conf" at /etc/httpd/conf/httpd.conf
 RUN echo "Listen 8080" > /etc/httpd/conf.d/phpmyadmin.conf && \
     echo "<VirtualHost *:8080>" >> /etc/httpd/conf.d/phpmyadmin.conf && \
@@ -57,5 +57,5 @@ RUN echo "Listen 8080" > /etc/httpd/conf.d/phpmyadmin.conf && \
 EXPOSE 80 443 3306 8080
 
 #CMD ["mysqld_safe"]
-COPY supervisord.conf.mysql /etc/supervisord.conf
+COPY ./supervisord.conf.mysql /etc/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

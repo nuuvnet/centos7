@@ -52,5 +52,5 @@ COPY httpd-2.2.15.tar.gz \
      phpMyAdmin-2.11.11.3-all-languages.tar.gz \
      .
 
-COPY supervisord.conf.centos7 /etc/supervisord.conf
+COPY ./supervisord.conf.centos7 /etc/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
