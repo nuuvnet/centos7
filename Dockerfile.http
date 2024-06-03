@@ -1,5 +1,5 @@
 # Build with:
-# docker build -f Dockerfile.http -t centos7-http --no-cache .
+# docker build -f Dockerfile.http -t centos7:http --no-cache .
 
 # Use an official / original CentOS base image
 FROM nuuvnet/centos7:updated
@@ -33,6 +33,9 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
     --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm LIBS="-llber" \
     && make \
     && make install
+
+# AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using x.x.x.x. Set the 'ServerName' directive globally to suppress this message
+RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
 
 EXPOSE 80 443
 

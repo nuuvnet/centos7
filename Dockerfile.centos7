@@ -1,7 +1,7 @@
 # 1. load original centos7 image
 # gunzip -c ./centos7-original.tar.gz | docker load
 # 2. Build updated centos7 image:
-# docker build -f Dockerfile.centos7 -t centos7-updated --no-cache .
+# docker build -f Dockerfile.centos7 -t centos7:updated --no-cache .
 
 # Use an official / original CentOS base image
 FROM centos:7
