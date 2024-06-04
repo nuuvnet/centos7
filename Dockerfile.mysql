@@ -37,23 +37,6 @@ RUN groupadd -g 1000 mysql && \
 # Set environment paths
 ENV PATH $PATH:/mysql/server/bin
 
-#PHPMYADMIN
-WORKDIR /http/server/apache2/htdocs
-RUN cp /build/phpMyAdmin-2.11.11.3-all-languages.tar.gz . \
-    && tar -xzf phpMyAdmin-2.11.11.3-all-languages.tar.gz \
-    && rm -f phpMyAdmin-2.11.11.3-all-languages.tar.gz \
-    && mv phpMyAdmin-2.11.11.3-all-languages phpmyadmin
-COPY ./config.phpmyadmin.inc.php /http/server/apache2/htdocs/phpmyadmin/config.inc.php
-# Create PHPMyAdmin configuration file for Apache, should be loaded by "IncludeOptional conf.d/*.conf" at /etc/httpd/conf/httpd.conf
-RUN echo "Listen 8080" > /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "<VirtualHost *:8080>" >> /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "    DocumentRoot /http/server/apache2/htdocs/phpmyadmin" >> /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "    <Directory /http/server/apache2/htdocs/phpmyadmin>" >> /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "        AllowOverride All" >> /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "        Require all granted" >> /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "    </Directory>" >> /etc/httpd/conf.d/phpmyadmin.conf && \
-    echo "</VirtualHost>" >> /etc/httpd/conf.d/phpmyadmin.conf
-
 EXPOSE 3306
 
 COPY ./supervisord.conf.mysql /etc/supervisord.conf
