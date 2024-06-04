@@ -9,23 +9,21 @@ WORKDIR /http/build
 RUN mv /build/httpd-2.2.15.tar.gz . \
     && tar -xzf httpd-2.2.15.tar.gz
 WORKDIR /http/build/httpd-2.2.15
-RUN cp /build/config.guess ./build \
-    && cp /build/config.sub ./build
-RUN ./configure --prefix=/http/server/apache2 && \
+RUN cp /usr/share/automake-1.13/config.guess ./build && \
+    cp /usr/share/automake-1.13/config.sub ./build
+RUN ./configure && \
     make && \
     make install
-COPY ./httpd.conf /etc/httpd/conf/httpd.conf
-#RUN /http/server/apache2/bin/apachectl start && \
-#    /http/server/apache2/bin/httpd -v
+#COPY httpd.conf /usr/local/apache2/conf/httpd.conf
 
 # PHP
 WORKDIR /php/build
 RUN mv /build/php-5.4.16.tar.gz . \
     && tar -xzf php-5.4.16.tar.gz
 WORKDIR /php/build/php-5.4.16
-RUN cp /build/config.guess . \
-    && cp /build/config.sub .
-RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
+RUN cp /usr/share/automake-1.13/config.guess . && \
+    cp /usr/share/automake-1.13/config.sub .
+RUN ./configure --with-apxs2 --with-mysqli --with-pdo-mysql \
     --with-zlib --enable-mbstring --with-curl --with-gd --enable-gd-native-ttf \
     --with-freetype-dir=/usr/include/freetype2 --with-jpeg-dir=/usr \
     --with-png-dir=/usr --enable-sockets --with-xsl --with-ldap \
@@ -34,10 +32,20 @@ RUN ./configure --with-apxs2=/usr/bin/apxs --with-mysqli --with-pdo-mysql \
     --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm LIBS="-llber" \
     && make \
     && make install
-COPY ./php.conf /etc/httpd/conf.d/php.conf
+RUN cp ./php.ini-production /usr/local/lib/php.ini
+#RUN ln -s /usr/local/apache2/modules/libphp5.so /etc/httpd/modules/libphp5.so
+COPY php.conf /etc/httpd/conf.d/php.conf
+
+# PHPMYADMIN
+WORKDIR /var/www/html
+RUN cp /build/phpMyAdmin-2.11.11.3-all-languages.tar.gz . \
+    && tar -xzf phpMyAdmin-2.11.11.3-all-languages.tar.gz \
+    && rm -f phpMyAdmin-2.11.11.3-all-languages.tar.gz \
+    && mv phpMyAdmin-2.11.11.3-all-languages phpmyadmin
+COPY config.phpmyadmin.inc.php ./phpmyadmin/config.inc.php
 
 EXPOSE 80 443
 
 COPY ./supervisord.conf.http /etc/supervisord.conf
 #CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
-CMD ["/http/server/apache2/bin/apachectl", "-D", "FOREGROUND"]
+CMD ["/bin/sh", "-c", "/usr/sbin/httpd -D FOREGROUND"]

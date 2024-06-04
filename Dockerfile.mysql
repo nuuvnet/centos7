@@ -3,7 +3,7 @@
 
 # Use an official / original CentOS base image
 #FROM nuuvnet/centos7:updated
-FROM nuuvnet/centos7:updated
+FROM nuuvnet/centos7:http
 
 #MYSQL
 RUN mkdir -p /mysql/build && \
