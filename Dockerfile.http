@@ -38,6 +38,6 @@ COPY ./php.conf /etc/httpd/conf.d/php.conf
 
 EXPOSE 80 443
 
-#CMD ["/http/server/apache2/bin/apachectl", "-D", "FOREGROUND"]
 COPY ./supervisord.conf.http /etc/supervisord.conf
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/http/server/apache2/bin/apachectl", "-D", "FOREGROUND"]
