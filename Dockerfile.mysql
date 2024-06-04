@@ -54,7 +54,7 @@ RUN echo "Listen 8080" > /etc/httpd/conf.d/phpmyadmin.conf && \
     echo "    </Directory>" >> /etc/httpd/conf.d/phpmyadmin.conf && \
     echo "</VirtualHost>" >> /etc/httpd/conf.d/phpmyadmin.conf
 
-EXPOSE 80 443 3306 8080
+EXPOSE 3306
 
 COPY ./supervisord.conf.mysql /etc/supervisord.conf
 #CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
