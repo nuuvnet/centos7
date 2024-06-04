@@ -37,7 +37,7 @@ RUN groupadd -g 1000 mysql && \
 # Set environment paths
 ENV PATH $PATH:/mysql/server/bin
 
-EXPOSE 3306
+EXPOSE 80 443 3306 8080
 
 COPY ./supervisord.conf.mysql /etc/supervisord.conf
 #CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
