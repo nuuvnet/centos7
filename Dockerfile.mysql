@@ -1,5 +1,5 @@
 # Build with:
-# docker build -f Dockerfile.mysql -t centos7:mysql --no-cache .
+# docker build -f Dockerfile.mysql -t nuuvnet/centos7:mysql --no-cache .
 
 # Use an official / original CentOS base image
 #FROM nuuvnet/centos7:updated
